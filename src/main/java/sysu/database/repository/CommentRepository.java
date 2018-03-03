@@ -11,5 +11,7 @@ public interface CommentRepository extends MongoRepository<CommentEntry,String>{
 	
 	public List<CommentEntry> findByVersionIDAndClassID(int versionID,int classID);
 	
+	public List<CommentEntry> findByVersionID(int versionID);
+	
 	
 }

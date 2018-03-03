@@ -36,6 +36,7 @@ public class CommentInserter {
 		CommentRepository commentRepository = RepositoryFactory.getCommentRepository();
 
 		List<ClassMessage> classList = classRepository.findByVersionID(versionID);
+		System.out.println("class list size:"+classList.size());
 		for (ClassMessage clazz:classList) {
 			// 只关注change类型的类变化
 			if (clazz.getType().equals("new") || clazz.getType().equals("delete")) {
@@ -104,6 +105,9 @@ public class CommentInserter {
 			}
 			newMethodList = tmp_newMethodList;
 			oldMethodList = tmp_oldMethodList;
+			
+			System.out.println("new method list size:"+newMethodList.size());
+			System.out.println("old method list size:"+oldMethodList.size());
 
 			List<CodeComment> newCommentList_temp = clazz.getNewComment();
 			List<CodeComment> oldCommentList_temp = clazz.getOldComment();
@@ -276,6 +280,9 @@ public class CommentInserter {
 					oldCommentList.addAll(oldMethodCommentList);
 				} 
 			}
+			
+			System.out.println("new comment list size:"+newCommentList.size());
+			System.out.println("old comment list size:"+oldCommentList.size());
 
 
 			for (int i = 0, n = newCommentList.size(); i < n; i++) {
@@ -310,7 +317,10 @@ public class CommentInserter {
 			for (int i = 0, n = newCommentList.size(); i < n; i++) {
 				CodeComment newComment = newCommentList.get(i);
 				CodeComment oldComment = oldCommentList.get(i);
-
+				
+				System.out.println("new comment:"+newComment.getStartLine()+"-"+newComment.getScopeEndLine());
+                System.out.println("old comment:"+oldComment.getStartLine()+"-"+oldComment.getScopeEndLine());
+				
 				List<DiffType> commentDiffList = new ArrayList<DiffType>();
 				for (DiffType diff : diffList) {
 					if ((diff.getNewStartLine() > newComment.getStartLine()
@@ -328,6 +338,7 @@ public class CommentInserter {
 				}
 
 				if (commentDiffList.isEmpty()) {
+					System.out.println("diff list is empty.");
 					continue;
 				}
 
@@ -357,6 +368,7 @@ public class CommentInserter {
 				comment.setChange(
 						StringTools.computeSimilarity(comment.getNewComment(), comment.getOldComment()) < 0.95);
 
+				System.out.println("insert comment.");
 				commentRepository.insert(comment);
 			}
 		}
@@ -413,7 +425,7 @@ public class CommentInserter {
 	public static void main(String[] args) {
 
 //		String[] projects = new String[] { "jgit","hibernate","spring","struts","commons-csv","commons-io","elasticsearch","strman-java","tablesaw" };
-		CommentInserter.insert(1);
+		CommentInserter.insert(964391914);
 	}
 
 }

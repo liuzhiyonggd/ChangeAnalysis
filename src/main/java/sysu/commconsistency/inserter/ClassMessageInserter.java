@@ -124,7 +124,7 @@ public class ClassMessageInserter {
 		if (isChange) {
 			type = "change";
 			try {
-				diffList = ChangeAnalysis.changeDistill(newClassPath, oldClassPath);
+				diffList = ChangeAnalysis.changeDistill(oldClassPath, newClassPath);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

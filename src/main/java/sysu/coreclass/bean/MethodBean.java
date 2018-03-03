@@ -11,11 +11,6 @@ public class MethodBean {
 	@Id
 	private String id;
 	
-	
-	
-
-
-	
 	@Field("version_id")
 	private int versionID;
 	
@@ -55,8 +50,6 @@ public class MethodBean {
 	@Field("outter_count")
 	private int outterCount=0;
 	
-	
-
 	public String getId() {
 		return id;
 	}

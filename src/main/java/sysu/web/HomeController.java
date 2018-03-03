@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import net.sf.json.JSONObject;
 import sysu.commconsistency.inserter.ClassMessageInserter;
 import sysu.commconsistency.inserter.CommentInserter;
+import sysu.commconsistency.inserter.CommentWordInserter;
 import sysu.common.util.AnalysisFileUtils;
 import sysu.coreclass.inserter.ClassInserter;
 import sysu.database.repository.UserRepository;
@@ -98,6 +99,8 @@ public class HomeController {
 		Random random = new Random(System.currentTimeMillis());
 		int versionID = random.nextInt(Integer.MAX_VALUE);
 		
+		System.out.println("versionID:"+versionID);
+		
 		//获取用户名，如用户未登录，则使用匿名用户名
 		String username = "liuzhiyong";
 		
@@ -117,9 +120,13 @@ public class HomeController {
 		//插入注释信息到数据表comment
 		CommentInserter.insert(versionID);
 		
+		//插入数据到数据表commentword
+		CommentWordInserter.insert(versionID);
+		
 		//保存版本号信息到session，供页面跳转时获取当前用户的当前查阅版本
 		request.getSession().setAttribute("versionID", versionID);
 		
+		return;
 
 	}
 	

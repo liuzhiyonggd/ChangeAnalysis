@@ -13,5 +13,5 @@ public interface CommentWordRepository extends MongoRepository<CommentWord,Strin
 	List<CommentWord> findByIschange(boolean ischange);
 	List<CommentWord> findByProjectAndIschange(String project,boolean ischange);
 	List<CommentWord> findByProjectAndType(String project,String type);
-	CommentWord findASingleByCommentIDAndType(int commentID,String type);
+	CommentWord findASingleByCommentID(int commentID);
 }

@@ -1,6 +1,5 @@
 package sysu.web;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,9 +19,11 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import sysu.commconsistency.bean.Line;
 import sysu.coreclass.bean.ClassBean;
+import sysu.coreclass.bean.MethodBean;
 import sysu.coreclass.classify.CoreClassClassifier;
 import sysu.coreclass.classify.DataGenerator;
 import sysu.coreclass.web.service.ClassService;
+import sysu.coreclass.web.service.MethodService;
 import sysu.web.bean.ChartData;
 import sysu.web.bean.ClassCode;
 import sysu.web.bean.Data;
@@ -31,26 +32,42 @@ import sysu.web.bean.LinkData;
 import sysu.web.bean.NodeData;
 import sysu.web.bean.TreeCell;
 
+/**
+ * 类修改信息控制器，包含类修改统计信息页面跳转和关键类信息页面跳转。
+ * @author Administrator
+ *
+ */
 @Controller
 public class ClassAnalysisController {
 
 	@Autowired
 	private ClassService classService;
+	
+	@Autowired
+	private MethodService methodService;
 
 	private static CoreClassClassifier coreClassClassifier;
 
+	/*
+	 * 关键类分类器初始化，在网站启动时需要消耗一些时间。
+	 */
 	static {
 		coreClassClassifier = new CoreClassClassifier();
 	}
 
+	/**
+	 * 类修改统计信息页面跳转
+	 * @param model  用于传递参数
+	 * @param request  获取用户当前session中的versionID
+	 * @return 跳转到类修改统计信息页面
+	 */
 	@RequestMapping(value = "/changestatistics/changestatistic", method = RequestMethod.GET)
-	public String changeStatistic(Model model, HttpServletRequest request) throws IOException {
+	public String changeStatistic(Model model, HttpServletRequest request) {
 
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 		List<ClassBean> classList = classService.findByVersionID(versionID);
-
 		model.addAttribute("classInfoList", classList);
-
+		
 		List<String> labels = new ArrayList<String>();
 		List<Double> addMethodNumList = new ArrayList<Double>();
 		List<Double> changeMethodNumList = new ArrayList<Double>();
@@ -166,13 +183,21 @@ public class ClassAnalysisController {
 
 	}
 
+	/**
+	 * 关键类信息页面的跳转
+	 * @param model 用于传递页面参数
+	 * @param request 获取当前用户中的session的versionID
+	 * @return 跳转到关键类信息页面
+	 */
 	@RequestMapping(value = "/coreclass/coreclass", method = RequestMethod.GET)
 	public String codeClass(Model model, HttpServletRequest request) {
 
+		// 获取指定versionID的类列表
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 		List<List<Integer>> vectors = DataGenerator.generate(versionID);
 		List<ClassBean> classList = classService.findByVersionID(versionID);
 
+		// 类调用关系图
 		String[] colors = new String[] { "lightblue", "lightgreen", "pink", "orange", "grey", "violet" };
 		List<NodeData> nodeList = new ArrayList<NodeData>();
 		List<LinkData> linkList = new ArrayList<LinkData>();
@@ -200,14 +225,15 @@ public class ClassAnalysisController {
 		JSONArray jsonLinkList = JSONArray.fromObject(linkList);
         model.addAttribute("linkList", jsonLinkList);
 		
+        //关键类判别
 		List<Double> result = new ArrayList<Double>();
 		try {
 			result = coreClassClassifier.classify(vectors);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		//关键类鱼网图
 		FormTreeData formTreeData = new FormTreeData();
 		for(int i=0;i<classList.size();i++)
 		{
@@ -216,11 +242,11 @@ public class ClassAnalysisController {
 			cell.setWeight(result.get(i));
 			formTreeData.addTreeCell(cell);
 			classList.get(i).setCoreProbability(result.get(i));
-			
 		}
 		JSONObject jsonFormTreeData = JSONObject.fromObject(formTreeData);
 		model.addAttribute("formTreeData", jsonFormTreeData);
 		
+		// 对类列表关于关键类概率降序排序
 		Collections.sort(classList,new Comparator<ClassBean>() {
 			@Override
 			public int compare(ClassBean class1,ClassBean class2) {
@@ -228,10 +254,58 @@ public class ClassAnalysisController {
 			}
 		});
 		
+		// 类摘要信息
+		List<String> coreClassMessageList = new ArrayList<String>();
+		List<String> commonClassMessageList = new ArrayList<String>();
 		
+		// 如果所有类的关键类概率均小于0.5，则概率最大的那个类为关键类,并最多输出两个非关键类信息
+		if(classList.get(0).getCoreProbability()<0.5d) {
+			coreClassMessageList.addAll(getClassMessage(true, classList.get(0).getVersionID(), 
+					classList.get(0).getClassID(), classList.get(0).getClassName()));
+			
+			if(classList.size()>3) {
+				commonClassMessageList.addAll(getClassMessage(false,classList.get(1).getVersionID(),
+						classList.get(1).getClassID(),classList.get(1).getClassName()));
+				
+				commonClassMessageList.addAll(getClassMessage(false,classList.get(2).getVersionID(),
+						classList.get(2).getClassID(),classList.get(2).getClassName()));
+			}else {
+				for(int i=1;i<classList.size();i++) {
+					commonClassMessageList.addAll(getClassMessage(false,classList.get(i).getVersionID(),
+							classList.get(i).getClassID(),classList.get(i).getClassName()));
+				}
+			}
+		}
+		// 否则将概率大于等于0.5的类均视为关键类,关键类信息均输出，关键类不足三个时，由非关键类补充到3个。
+		else {
+			int count = 0;
+			for(ClassBean clazz:classList) {
+				if(clazz.getCoreProbability()>=0.5) {
+					count++;
+					coreClassMessageList.addAll(getClassMessage(true,clazz.getVersionID(),
+							clazz.getClassID(),clazz.getClassName()));
+					coreClassMessageList.add("");
+				}else {
+					break;
+				}
+			}
+			for(;count<=3;count++) {
+				commonClassMessageList.addAll(getClassMessage(false,classList.get(count).getVersionID(),
+						classList.get(count).getClassID(),classList.get(count).getClassName()));
+				commonClassMessageList.add("");
+			}
+		}
+		String classMessage = "";
+		for(String str:coreClassMessageList) {
+			classMessage += str + "<br/>";
+		}
+		for(String str:commonClassMessageList) {
+			classMessage += str + "<br/>";
+		}
+		model.addAttribute("classMessage",classMessage);
 		
+		// 修改类的代码列表
 		List<List<Integer>> highLightList = new ArrayList<List<Integer>>();
-		
 		List<ClassCode> codeList = new ArrayList<ClassCode>();
 		for(ClassBean clazz:classList) {
 		    StringBuilder sb = new StringBuilder();
@@ -262,7 +336,48 @@ public class ClassAnalysisController {
 		}
 		model.addAttribute("codeList",codeList);
 		model.addAttribute("highLightList",highLightList);
-		
 		return "coreclass/coreclass";
     }
+	
+	private List<String> getClassMessage(boolean isCoreClass,int versionID,int classID,String className){
+		List<String> classMessageList = new ArrayList<String>();
+		String classType = "关键类";
+		if(!isCoreClass) {
+			classType = "非关键类";
+			classMessageList.add("<font color='blue'>"+classType+":"+className+"</font>");
+		}else {
+			classMessageList.add("<font color='red' size='3'>"+classType+":"+className+"</font>");
+		}
+		
+		String temp = "&nbsp;&nbsp;&nbsp;&nbsp;新增方法: ";
+		String temp2 = "&nbsp;&nbsp;&nbsp;&nbsp;修改方法: ";
+		String temp3 = "&nbsp;&nbsp;&nbsp;&nbsp;删除方法: ";
+		
+		List<MethodBean> methodList = methodService.findByVersionIDAndClassID(versionID, classID);
+	    boolean hasNewMethod = false;
+	    boolean hasChangeMethod = false;
+	    boolean hasDeleteMethod = false;
+		for(MethodBean method:methodList) {
+	    	if(method.getMethodType().equals("new")) {
+	    		hasNewMethod = true;
+	    		temp += method.getMethodName()+"; ";
+	    	}else if(method.getMethodType().equals("change")) {
+	    		hasChangeMethod = true;
+	    		temp2 += method.getMethodName() + "; ";
+	    	}else {
+	    		hasDeleteMethod = true;
+	    		temp3 += method.getMethodName() + "; ";
+	    	}
+	    }
+	    if(hasNewMethod) {
+	        classMessageList.add(temp);
+	    }
+	    if(hasChangeMethod) {
+	        classMessageList.add(temp2);
+	    }
+	    if(hasDeleteMethod) {
+	        classMessageList.add(temp3);
+	    }
+	    return classMessageList;
+	}
 }

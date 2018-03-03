@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .logout()
                 .logoutSuccessUrl("/login")//退出登录后的默认为login
                 .permitAll();
+        
         http.csrf().disable();
 
     }

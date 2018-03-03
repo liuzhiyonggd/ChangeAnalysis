@@ -118,7 +118,7 @@
 						<div class="span4" style="width: 500px; height: 400px;">
 							<div class="block">
 								<div class="navbar navbar-inner block-header">
-									<div class="muted pull-left">核心类鱼网图</div>
+									<div class="muted pull-left">关键类鱼网图</div>
 								</div>
 								<div class="block-content collapse in"
 									style="width: 480px; height: 330px; position: relative">
@@ -131,11 +131,11 @@
 						<div class="span4" style="width: 500px; height: 400px">
 							<div class="block">
 								<div class="navbar navbar-inner block-header">
-									<div class="muted pull-left">类的出入度网状图</div>
+									<div class="muted pull-left">类修改关系网状图</div>
 								</div>
 								<div class="block-content collapse in"
 									style="width: 480px; height: 330px;">
-									<div id="relationFigure" style="width: 480px; height: 330px;">类的出入度网状图</div>
+									<div id="relationFigure" style="width: 480px; height: 330px;">类修改关系网状图</div>
 								</div>
 							</div>
 						</div>
@@ -145,10 +145,10 @@
 						<div class="span9" style="width: 1030px; height: 400px;">
 							<div class="block">
 								<div class="navbar navbar-inner block-header">
-									<div class="muted pull-left">代码修改摘要信息</div>
+									<div class="muted pull-left">类修改摘要信息</div>
 								</div>
 								<div class="block-content collapse in" style="height: 330px;">
-									<div>代码修改摘要信息</div>
+									<div th:utext="${classMessage}" style="overflow: scroll;"></div>
 								</div>
 							</div>
 						</div>
@@ -540,14 +540,12 @@
 		
 		for(var i=0;i<codeList.length;i++){
 			var classValue = 'brush:java;highlight:['+highLightList[i]+"]";
-			console.log(classValue);
-
 		    var pre = document.getElementById('code'+i);
 		    pre.innerHTML = codeList[i].code;
 		    pre.setAttribute("class",classValue);
 		}
 		SyntaxHighlighter.all();
-
+		
 	    /*]]>*/
 		</script>
 </body>

@@ -16,7 +16,7 @@ import sysu.database.repository.RepositoryFactory;
 
 public class DataGenerator {
 
-	public static List<List<Double>> generateDataSet(int versionID) throws IOException {
+	public static List<List<Double>> generate(int versionID) throws IOException {
 
 		List<List<Double>> data = new ArrayList<List<Double>>();
 		CommentRepository commentRepository = RepositoryFactory.getCommentRepository();
@@ -338,15 +338,6 @@ public class DataGenerator {
 	}
 
 	public static void main(String[] args) throws IOException {
-		int versionID = 355049374;
-		List<List<Double>> vectors = generateDataSet(versionID);
-		System.out.println("vectors size:"+vectors.size());
-		for(List<Double> vector:vectors) {
-			for(double d:vector) {
-				System.out.print(d+" ");
-			}
-			System.out.println();
-		}
 
 	}
 

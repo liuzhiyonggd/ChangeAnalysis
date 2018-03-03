@@ -1,7 +1,12 @@
 package sysu.web;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,9 +19,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import net.sf.json.JSONObject;
 import sysu.commconsistency.bean.ClassMessage;
 import sysu.commconsistency.bean.CodeComment;
+import sysu.commconsistency.bean.CommentEntry;
+import sysu.commconsistency.bean.DiffType;
+import sysu.commconsistency.classify.ConsistencyClassifier;
+import sysu.commconsistency.classify.DataGenerator;
 import sysu.commconsistency.web.service.ClassMessageService;
+import sysu.commconsistency.web.service.CommentService;
 import sysu.common.util.WordSpliter;
+import sysu.coreclass.bean.ClassBean;
 import sysu.web.bean.ChartData;
+import sysu.web.bean.CommentCode;
 import sysu.web.bean.CommentInfo;
 import sysu.web.bean.Data;
 
@@ -25,6 +37,15 @@ public class CommentAnalysisController {
 
 	@Autowired
 	private ClassMessageService classMessageService;
+
+	@Autowired
+	private CommentService commentService;
+
+	private static ConsistencyClassifier classifier;
+
+	static {
+		classifier = new ConsistencyClassifier();
+	}
 
 	@RequestMapping(value = "/commentstatistics/commentstatistic", method = RequestMethod.GET)
 	public String commentStatistic(Model model, HttpServletRequest request) {
@@ -118,8 +139,8 @@ public class CommentAnalysisController {
 						break;
 					}
 				}
-				if(isCommonComment) {
-					commonComment ++;
+				if (isCommonComment) {
+					commonComment++;
 				}
 
 			}
@@ -262,6 +283,59 @@ public class CommentAnalysisController {
 	@RequestMapping(value = "/commentconsistency/commentconsistency", method = RequestMethod.GET)
 	public String commentConsistency(Model model, HttpServletRequest request) {
 
-		return "commentconsistency";
+		// 获取指定versionID的类列表
+		int versionID = (Integer) request.getSession().getAttribute("versionID");
+		List<CommentEntry> commentList = commentService.findByVersionID(versionID);
+
+		List<List<Double>> vectors = new ArrayList<List<Double>>();
+		try {
+			vectors = DataGenerator.generate(versionID);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		List<Double> results = new ArrayList<Double>();
+		try {
+			results = classifier.classify(vectors);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		for (int i = 0; i < commentList.size(); i++) {
+			commentList.get(i).setIsChangeProbability(results.get(i));
+		}
+
+		// 对注释列表关于不一致概率降序排序
+		Collections.sort(commentList, new Comparator<CommentEntry>() {
+			@Override
+			public int compare(CommentEntry comment1, CommentEntry comment2) {
+				return comment1.getIsChangeProbability() > comment2.getIsChangeProbability() ? -1 : 1;
+			}
+		});
+		
+		List<Set<Integer>> highlightList = new ArrayList<Set<Integer>>();
+		for(CommentEntry comment:commentList) {
+			Set<Integer> highLight = new TreeSet<Integer>();
+			for(DiffType diff:comment.getDiffList()) {
+				if(diff.getNewStartLine()>0&&diff.getNewEndLine()>0) {
+					for(int i=diff.getNewStartLine();i<=diff.getNewEndLine();i++) {
+						highLight.add(i);
+					}
+				}
+			}
+			highlightList.add(highLight);
+		}
+		
+		
+		List<CommentCode> commentCodeList = new ArrayList<CommentCode>();
+		for(CommentEntry comment:commentList) {
+			commentCodeList.add(new CommentCode(comment));
+		}
+
+
+		model.addAttribute("commentList", commentCodeList);
+		model.addAttribute("highlightList", highlightList);
+
+		return "commentconsistency/commentconsistency";
 	}
 }

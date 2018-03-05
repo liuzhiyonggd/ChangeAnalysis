@@ -1,7 +1,5 @@
 package sysu.web.service;
 
-
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,12 +17,11 @@ public class CustomUserDetailsService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		
-		User user = userRepository.findByUserName(userName);
+		User user = userRepository.findByUsername(userName);
 		
 		if(user==null) {
 			throw new UsernameNotFoundException("UserName:"+userName + "not found.");
 		}
-		Logger.getLogger(this.getClass()).info(user.getUserName()+":"+user.getPassword());
 		// UserSecurity实现UserDetails
         UserSecurity userSecurity = new UserSecurity(user);
         return userSecurity; 

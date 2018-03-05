@@ -3,45 +3,37 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
 	class="no-js">
 <head>
-<title>ChangeAnalysis-注释一致性分析</title>
+<title>ChangeAnalysis-用户上传列表</title>
 
 <meta charset="UTF-8"></meta>
 <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
 <!-- Bootstrap -->
-<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet"
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"
 	media="screen" />
-<link href="/bootstrap/css/bootstrap-responsive.min.css"
+<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"
+	media="screen" />
+<link href="vendors/easypiechart/jquery.easy-pie-chart.css"
 	rel="stylesheet" media="screen" />
-<link href="/vendors/easypiechart/jquery.easy-pie-chart.css"
-	rel="stylesheet" media="screen" />
-<link href="/foamtree/css/common.css" rel="stylesheet" />
-<link href="/assets/styles.css" rel="stylesheet" media="screen" />
+<link href="foamtree/css/common.css" rel="stylesheet" />
+<link href="assets/styles.css" rel="stylesheet" media="screen" />
 
-<link href="/vendors/datepicker.css" rel="stylesheet" media="screen" />
-<link href="/vendors/uniform.default.css" rel="stylesheet"
-	media="screen" />
-<link href="/vendors/chosen.min.css" rel="stylesheet" media="screen" />
-<link href="/vendors/wysiwyg/bootstrap-wysihtml5.css" rel="stylesheet"
+<link href="vendors/datepicker.css" rel="stylesheet" media="screen" />
+<link href="vendors/uniform.default.css" rel="stylesheet" media="screen" />
+<link href="vendors/chosen.min.css" rel="stylesheet" media="screen" />
+<link href="vendors/wysiwyg/bootstrap-wysihtml5.css" rel="stylesheet"
 	media="screen" />
 
 <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
 <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-<script src="/vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
-<script src="/chart/Chart.js"></script>
-<script src="/goJS/go.js"></script>
-
-<!-- syntaxHighlighter -->
-<link href="/vendors/syntaxhighlighter/styles/shCore.css"
-	rel="stylesheet" />
-<link href="/vendors/syntaxhighlighter/styles/shCoreEclipse.css"
-	rel="stylesheet" />
+<script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+<script src="chart/Chart.js"></script>
 
 </head>
 
 <body>
-<div class="navbar navbar-fixed-top">
+	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="btn btn-navbar" data-toggle="collapse"
@@ -50,7 +42,8 @@
 				</a> <a class="brand" href="/">Change Analysis</a>
 				<div class="nav-collapse collapse">
 				<ul class="nav pull-right">
-						<li class="dropdown"><a href="#" role="button"
+						<li class="dropdown">
+						<a href="#" role="button"
 							class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i><i
 								sec:authentication="name"></i><i class="caret"></i>
 
@@ -87,11 +80,14 @@
 				<ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
 					<li><a href="/changestatistics/changestatistic"><i
 							class="icon-chevron-right"></i> 代码修改统计信息</a></li>
-					<li><a href="/coreclass/coreclass"><i
-							class="icon-chevron-right"></i> 核心类分析</a></li>
-					<li><a href="/commentstatistics/commentstatistic"><i class="icon-chevron-right"></i> 注释统计信息</a></li>
-					<li class="active"><a href="/commentconsistency/commentconsistency"><i class="icon-chevron-right"></i> 注释一致性检测</a></li>
-					<li><a href="/uploadlist"><i class="icon-chevron-right"></i> 用户上传列表</a></li>
+					<li><a href="/coreclass/coreclass"><i class="icon-chevron-right"></i>
+							核心类分析</a></li>
+					<li><a href="/commentstatistics/commentstatistic"><i class="icon-chevron-right"></i>
+							注释统计信息</a></li>
+					<li><a href="/commentconsistency/commentconsistency"><i class="icon-chevron-right"></i>
+							注释一致性检测</a></li>
+					<li class="active"><a href="/uploadlist"><i class="icon-chevron-right"></i>
+							用户上传列表</a></li>
 				</ul>
 			</div>
 
@@ -125,32 +121,30 @@
 
 					</div>
 
-
 					<div class="row">
 						<div class="span8" style="width: 1029px;">
 							<div class="block">
 								<div class="navbar navbar-inner block-header">
-									<div class="muted pull-left">注释一致性信息</div>
+									<div class="muted pull-left">用户上传列表</div>
 								</div>
 								<div class="block-content collapse in">
 									<table class="table table-striped" id="classInfoTable">
 										<thead>
 											<tr>
 												<th>编号</th>
-												<th>所属类</th>
-												<th>范围</th>
-												<th>与代码的一致性</th>
+												<th>版本号</th>
+												<th>修改类数量</th>
+												<th>上传时间</th>
 												<th>查看</th>
-												
 											</tr>
 										</thead>
 										<tbody>
-											<tr th:each="comment:${commentList}">
-											    <td th:text="${comment.commentID}">1</td>
-												<td th:text="${comment.className}">className</td>
-												<td th:text="${comment.startLine}+'-'+${comment.endLine}">0-0</td>
-												<td th:text="${comment.consistency}">一致</td>
-												<td><a th:href="'#comment_'+${comment.commentID}">查看</a></td>
+											<tr th:each="version,versionStat:${versionList}">
+												<td th:text="${versionStat.index}+1">1</td>
+												<td th:text="${version.versionID}">1</td>
+												<td th:text="${version.classNum}">100</td>
+												<td th:text="${version.formatUploadTime}">2018年1月1日 1时1分1秒</td>
+												<td><a th:href="'/view?versionID='+${version.versionID}">查看</a></td>
 											</tr>
 										</tbody>
 									</table>
@@ -159,61 +153,34 @@
 							<!-- /block-->
 						</div>
 					</div>
-					
-					<div th:each="comment:${commentList}">
-					    <div class="row">
-						<div class="span9" style="width: 1030px; height: 400px;">
-							<div class="block">
-								<div class="navbar navbar-inner block-header">
-									<div th:id="'comment_'+${comment.commentID}" class="muted pull-left" th:text="${comment.className}+' comment_'+${comment.commentID}">代码</div>
-								</div>
-								<div class="block-content collapse in" style="overflow: scroll; height: 300px">
-									<pre th:id="${comment.commentID}">代码</pre>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-					</div>
-
-					
-
-					<div></div>
-
 				</div>
 			</div>
 		</div>
 	</div>
 	<!--/.fluid-container-->
 
-	<script src="/vendors/jquery-1.9.1.min.js"></script>
-	<script src="/bootstrap/js/bootstrap.min.js"></script>
-	<script src="/vendors/easypiechart/jquery.easy-pie-chart.js"></script>
-	<script src="/assets/scripts.js"></script>
+	<script src="vendors/jquery-1.9.1.min.js"></script>
+	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="vendors/easypiechart/jquery.easy-pie-chart.js"></script>
+	<script src="assets/scripts.js"></script>
 
-	<script src="/vendors/jquery.uniform.min.js"></script>
-	<script src="/vendors/chosen.jquery.min.js"></script>
-	<script src="/vendors/bootstrap-datepicker.js"></script>
+	<script src="vendors/jquery.uniform.min.js"></script>
+	<script src="vendors/chosen.jquery.min.js"></script>
+	<script src="vendors/bootstrap-datepicker.js"></script>
 
-	<script src="/vendors/wysiwyg/wysihtml5-0.3.0.js"></script>
-	<script src="/vendors/wysiwyg/bootstrap-wysihtml5.js"></script>
+	<script src="vendors/wysiwyg/wysihtml5-0.3.0.js"></script>
+	<script src="vendors/wysiwyg/bootstrap-wysihtml5.js"></script>
 
-	<script src="/vendors/wizard/jquery.bootstrap.wizard.min.js"></script>
+	<script src="vendors/wizard/jquery.bootstrap.wizard.min.js"></script>
 
 
 	<script type="text/javascript"
-		src="/vendors/jquery-validation/dist/jquery.validate.min.js"></script>
-	<script src="/assets/form-validation.js"></script>
+		src="vendors/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="assets/form-validation.js"></script>
 
-	<script src="/assets/scripts.js"></script>
+	<script src="assets/scripts.js"></script>
 
-	<script src="/foamtree/js/carrotsearch.foamtree.js"></script>
-	
-		<!-- syntaxHighlighter -->
-	<script type="text/javascript"
-		src="/vendors/syntaxhighlighter/scripts/shCore.js"></script>
-	<script type="text/javascript"
-		src="/vendors/syntaxhighlighter/scripts/shBrushJava.js"></script>
+	<script src="foamtree/js/carrotsearch.foamtree.js"></script>
 
 	<script>
 		jQuery(document).ready(function() {
@@ -275,25 +242,36 @@
 		}
 		function uploadComplete(evt) {
 	        /* 服务器端返回响应时候触发event事件*/
-			window.location.href='/commentconsistency/commentconsistency';
+			window.location.href='/changestatistics/changestatistic';
 	      }
 	</script>
-	
-	<script th:inline="javascript">
-		/*<![CDATA[*/
-		var commentList = [[${commentList}]];
-		var highlightList = [[${highlightList}]];
-		
-		for(var i=0;i<commentList.length;i++){
-			var classValue = 'brush:java;highlight:['+highlightList[i]+"];first-line:"+commentList[i].startLine+";";
-		    var pre = document.getElementById(commentList[i].commentID);
-		    pre.innerHTML = commentList[i].code;
-		    pre.setAttribute("class",classValue);
-		}
-		SyntaxHighlighter.all();
-		
-	    /*]]>*/
-		</script>
-</body>
 
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		
+		for(var i=1;i<7;i++){
+		var ctx = document.getElementById("myChart"+i).getContext('2d');
+	    var data = [[${chartData}]];
+	    console.log(data);
+	    
+	    
+		var myChart = new Chart(ctx,
+				{
+					type : 'bar',
+					data : data,
+					options : {
+						scales : {
+							yAxes : [ {
+								ticks : {
+									beginAtZero : true
+								}
+							} ]
+						}
+					}
+				});
+		
+		}
+		/*]]>*/
+	</script>
+</body>
 </html>

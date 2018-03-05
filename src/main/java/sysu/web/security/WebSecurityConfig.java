@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 import sysu.web.service.CustomUserDetailsService;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)//开启security注解
@@ -35,25 +34,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
         return super.authenticationManager();
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         //允许所有用户访问"/"和"/home"
         http.authorizeRequests()
-                .antMatchers("/", "/upload","/home","/signin","/login","/coreclass/coreclass","/commentstatistics/commentstatistic","/changestatistics/changestatistic","/commentconsistency/commentconsistency").permitAll()
+                .antMatchers("/", "/upload","/home","/register","/login","/coreclass/coreclass","/commentstatistics/commentstatistic","/changestatistics/changestatistic","/commentconsistency/commentconsistency").permitAll()
                 //其他地址的访问均需验证权限
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 //指定登录页是"/login"
                 .loginPage("/login")
-                .defaultSuccessUrl("/")//登录成功后默认跳转到主页
+                .defaultSuccessUrl("/changestatistics/changestatistic")//登录成功后默认跳转到主页
                 .successForwardUrl("/")
                 .permitAll()
                 .and()
                 .logout()
-                .logoutSuccessUrl("/login")//退出登录后的默认为login
+                .logoutSuccessUrl("/changestatistics/changestatistic")//退出登录后的默认为login
                 .permitAll();
         
         http.csrf().disable();
@@ -90,6 +88,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
  
         web.ignoring().antMatchers("/assets/**","/images/**","/bootstrap/**","/bootstrap/css/**","/bootstrap/js/**","/vendors/**","/fonts/**","/chart/**","/goJS/**","/foamtree/**","/chart/**");
     }
-
-
 }

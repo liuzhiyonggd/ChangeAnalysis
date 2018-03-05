@@ -89,6 +89,9 @@ public class CommentEntry {
 	private boolean refactor10=false;
 	private boolean refactor11=false;
 	private boolean refactor12=false;
+	
+	@Field("username")
+	private String username;
 
 	public String getClassName() {
 		return className;
@@ -301,6 +304,12 @@ public class CommentEntry {
 	}
 	public void setVersionID(int versionID) {
 		this.versionID = versionID;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	

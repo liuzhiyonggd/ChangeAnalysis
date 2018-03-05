@@ -35,7 +35,7 @@ public class ClassMessageInserter {
 	
 	private static ClassMessageRepository classMessageRepo = RepositoryFactory.getClassMessageRepository();
 
-	public static void insertClass(String newClassPath,String oldClassPath,int versionID,int classID) {
+	public static void insertClass(String newClassPath,String oldClassPath,int versionID,int classID,String username) {
 
 		String splitSeparator = File.separator;
 		if(splitSeparator.equals("\\")) {
@@ -159,7 +159,7 @@ public class ClassMessageInserter {
 		classMessage.setDiffList(diffList);
 		classMessage.setNewComment(newCommentList);
 		classMessage.setOldComment(oldCommentList);
-		
+		classMessage.setUsername(username);
 		if(diffList!=null&&diffList.size()>0) {
 		    classMessageRepo.insert(classMessage);
 		}
@@ -201,7 +201,7 @@ public class ClassMessageInserter {
 		return codeCommentList;
 	}
 
-	public static void insertVersion(String filePath, int versionID) {
+	public static void insertVersion(String filePath, int versionID,String username) {
 
 			File oldDir = new File(filePath+"/old");
 			File newDir = new File(filePath+"/new");
@@ -257,7 +257,7 @@ public class ClassMessageInserter {
 					}
 					oldPath += temps[temps.length-1];
 					
-					insertClass(str, oldPath, versionID, classID);
+					insertClass(str, oldPath, versionID, classID,username);
 					classID ++;
 				}
 			}

@@ -41,7 +41,7 @@
 </head>
 
 <body>
-	<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
 				<a class="btn btn-navbar" data-toggle="collapse"
@@ -49,20 +49,32 @@
 					class="icon-bar"></span> <span class="icon-bar"></span>
 				</a> <a class="brand" href="/">Change Analysis</a>
 				<div class="nav-collapse collapse">
-					<ul class="nav pull-right">
+				<ul class="nav pull-right">
 						<li class="dropdown"><a href="#" role="button"
-							class="dropdown-toggle" data-toggle="dropdown"> <i
-								class="icon-user"></i> Vincent Gabriel <i class="caret"></i>
+							class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i><i
+								sec:authentication="name"></i><i class="caret"></i>
 
 						</a>
 							<ul class="dropdown-menu">
-								<li><a tabindex="-1" href="#">Profile</a></li>
-								<li class="divider"></li>
-								<li><a tabindex="-1" href="login.html">Logout</a></li>
+
+								<li sec:authorize="hasRole('ROLE_USER')">
+								<a tabindex="-1" href="/logout">退出</a>
+									
+								</li>
+
+
+								<li sec:authorize="hasRole('ROLE_ANONYMOUS')">
+									<a tabindex="-1" href="/login">登录</a>
+								</li>
+								
+								<li sec:authorize="hasRole('ROLE_ANONYMOUS')">
+									<a tabindex="-1" href="/register">注册</a>
+								</li>
+
 							</ul></li>
 					</ul>
 					<ul class="nav">
-						<li><a href="/">主页</a></li>
+						<li class="active"><a href="#">主页</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
@@ -79,7 +91,7 @@
 							class="icon-chevron-right"></i> 核心类分析</a></li>
 					<li><a href="/commentstatistics/commentstatistic"><i class="icon-chevron-right"></i> 注释统计信息</a></li>
 					<li><a href="/commentconsistency/commentconsistency"><i class="icon-chevron-right"></i> 注释一致性检测</a></li>
-					<li><a href="/"><i class="icon-chevron-right"></i> 用户上传列表</a></li>
+					<li><a href="/uploadlist"><i class="icon-chevron-right"></i> 用户上传列表</a></li>
 				</ul>
 			</div>
 

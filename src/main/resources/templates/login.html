@@ -3,7 +3,8 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
 	class="no-js">
 <head>
-<title>Login</title>
+<title>用户登录</title>
+<meta charset="UTF-8"></meta>
 <link rel="icon" type="image/x-icon" href="/images/favicon.ico"/>
 <!-- Bootstrap -->
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet"
@@ -174,43 +175,38 @@
 <body>
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
-			<div class="container-fluid">
+			<div class="container">
 				<a class="btn btn-navbar" data-toggle="collapse"
 					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="#">Comment Consistency</a>
+				</a> <a class="brand" href="/">Change Analysis</a>
 				<div class="nav-collapse collapse">
+				<ul class="nav pull-right">
+						<li class="dropdown"><a href="#" role="button"
+							class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i><i
+								sec:authentication="name"></i><i class="caret"></i>
 
+						</a>
+							<ul class="dropdown-menu">
+
+								<li sec:authorize="hasRole('ROLE_USER')">
+								<a tabindex="-1" href="/logout">退出</a>
+									
+								</li>
+
+
+								<li sec:authorize="hasRole('ROLE_ANONYMOUS')">
+									<a tabindex="-1" href="/login">登录</a>
+								</li>
+								
+								<li sec:authorize="hasRole('ROLE_ANONYMOUS')">
+									<a tabindex="-1" href="/register">注册</a>
+								</li>
+
+							</ul></li>
+					</ul>
 					<ul class="nav">
-						<li><a href="/">Home</a></li>
-						<li class="dropdown">
-                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">CommentScope <b class="caret"></b>
-
-                                </a>
-                                <ul class="dropdown-menu" id="menu1">
-                                    <li>
-                                        <a th:href="@{/commentscope/viewlist(pageno=1,pagesize=20)}">View</a>
-                                    </li>
-                                    <li>
-                                        <a th:href="@{/commentscope/verificationlist(pageno=1,pagesize=20)}">Verification</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-						<li class="dropdown">
-                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">CodeRefactor <b class="caret"></b>
-
-                                </a>
-                                <ul class="dropdown-menu" id="menu1">
-                                    <li>
-                                        <a th:href="@{/refactor/methodextractor/list(pageno=1,pagesize=20)}">MethodExtract</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">other</a>
-                                    </li>
-                                </ul>
-                            </li>
-						<li><a href="#">Comment Consistency</a></li>
+						<li class="active"><a href="#">主页</a></li>
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
@@ -222,13 +218,11 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-offset-3 col-md-3">
-					<p th:if="${param.logout}" class="bg-warning">logout
-						successfully.</p>
-					<p th:if="${param.error}" class="bg-danger">error.wrong
-						username or password.</p>
+					<p th:if="${param.logout}" class="bg-warning">成功退出</p>
+					<p th:if="${param.error}" class="bg-danger">用户名或密码错误</p>
 					<form class="form-horizontal" th:action="@{/login}" action="/login"
 						method="POST">
-						<span class="heading">User Login</span>
+						<span class="heading">用户登录</span>
 						<div class="form-group">
 							<input type="text" class="form-control" name="username"
 								placeholder="username" />
@@ -241,9 +235,9 @@
 						</div>
 						<div class="form-group">
 
-							<span class="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/signin" style="color: blue;">signin</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+							<span class="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/register" style="color: blue;">注册</a>&nbsp;&nbsp;&nbsp;&nbsp;</span>
 							
-							<button type="submit" class="btn btn-default">Login</button>
+							<button type="submit" class="btn btn-default">登录</button>
 						</div>
 					</form>
 				</div>

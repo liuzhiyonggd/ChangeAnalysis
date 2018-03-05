@@ -31,5 +31,9 @@ public class RepositoryFactory {
 	public static ClassRepository getClassRepository() {
 		return context.getBean(ClassRepository.class);
 	}
+	
+	public static VersionRepository getVersionRepository() {
+		return context.getBean(VersionRepository.class);
+	}
 
 }

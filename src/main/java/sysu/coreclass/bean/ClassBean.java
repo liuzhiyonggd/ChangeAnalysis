@@ -23,8 +23,8 @@ public class ClassBean {
 	@Field("class_id")
 	private int classID;
 	
-	@Field("user_name")
-	private String userName;
+	@Field("username")
+	private String username;
 	
 	@Field("class_name")
 	private String className;
@@ -246,12 +246,12 @@ public class ClassBean {
 		this.versionID = versionID;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserName(String username) {
+		this.username = username;
 	}
 
 	public String getId() {

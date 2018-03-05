@@ -28,12 +28,12 @@ public class MyAuthenticationProvider implements AuthenticationProvider{
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = (String) authentication.getCredentials();
-        User user = userRepository.findByUserName(username);
+        
+        User user = userRepository.findByUsername(username);
         if(user == null){
             throw new BadCredentialsException("Username not found.");
         }
-        UserSecurity userSecurity = new UserSecurity( userRepository.findByUserName(username));
-        
+        UserSecurity userSecurity = new UserSecurity( userRepository.findByUsername(username));
 
         //加密过程在这里体现
         if (!password.equals(userSecurity.getPassword())) {

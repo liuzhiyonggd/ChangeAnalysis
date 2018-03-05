@@ -46,6 +46,9 @@ public class ClassMessage {
 	@Field("codes")
 	private List<Line> codes;
 	
+	@Field("username")
+	private String username;
+	
 	public int getClassID() {
 		return classID;
 	}
@@ -125,6 +128,12 @@ public class ClassMessage {
 	}
 	public void setCodes(List<Line> codes) {
 		this.codes = codes;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 	

@@ -49,6 +49,11 @@ public class CommentAnalysisController {
 
 	@RequestMapping(value = "/commentstatistics/commentstatistic", method = RequestMethod.GET)
 	public String commentStatistic(Model model, HttpServletRequest request) {
+		
+		if(request.getSession().getAttribute("versionID")==null) {
+			request.getSession().setAttribute("versionID", 611099378);
+		}
+		
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 
 		List<ClassMessage> classMessageList = classMessageService.findByVersionID(versionID);
@@ -283,6 +288,10 @@ public class CommentAnalysisController {
 	@RequestMapping(value = "/commentconsistency/commentconsistency", method = RequestMethod.GET)
 	public String commentConsistency(Model model, HttpServletRequest request) {
 
+		if(request.getSession().getAttribute("versionID")==null) {
+			request.getSession().setAttribute("versionID", 611099378);
+		}
+		
 		// 获取指定versionID的类列表
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 		List<CommentEntry> commentList = commentService.findByVersionID(versionID);

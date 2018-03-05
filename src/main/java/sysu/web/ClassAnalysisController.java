@@ -64,6 +64,10 @@ public class ClassAnalysisController {
 	@RequestMapping(value = "/changestatistics/changestatistic", method = RequestMethod.GET)
 	public String changeStatistic(Model model, HttpServletRequest request) {
 
+		if(request.getSession().getAttribute("versionID")==null) {
+			request.getSession().setAttribute("versionID", 611099378);
+		}
+		
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 		List<ClassBean> classList = classService.findByVersionID(versionID);
 		model.addAttribute("classInfoList", classList);
@@ -192,6 +196,10 @@ public class ClassAnalysisController {
 	@RequestMapping(value = "/coreclass/coreclass", method = RequestMethod.GET)
 	public String codeClass(Model model, HttpServletRequest request) {
 
+		if(request.getSession().getAttribute("versionID")==null) {
+			request.getSession().setAttribute("versionID", 611099378);
+		}
+		
 		// 获取指定versionID的类列表
 		int versionID = (Integer) request.getSession().getAttribute("versionID");
 		List<List<Integer>> vectors = DataGenerator.generate(versionID);

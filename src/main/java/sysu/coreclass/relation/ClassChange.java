@@ -74,6 +74,12 @@ public class ClassChange {
 			this.oldMethodNum = oldClass.getMethods().length;
 		}
 
+		if(oldFilePath == null) {
+			oldFilePath = "";
+		}
+		if(newFilePath == null) {
+			newFilePath = "";
+		}
 		File oldFile = new File(oldFilePath);
 		File newFile = new File(newFilePath);
 

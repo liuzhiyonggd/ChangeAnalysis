@@ -325,12 +325,14 @@ public class ClassInserter {
 	}
 	
 	public static void main(String[] args) {
-		Random random = new Random(System.currentTimeMillis());
-		for(int i=0;i<10;i++) {
-		    int versionID = random.nextInt(Integer.MAX_VALUE);
-		    System.out.println("version id:"+versionID);
-		}
-		
+		List<Integer> idList = new ArrayList<Integer>();
+		test(idList);
+		System.out.println(idList.size()+"");
+	}
+	
+	private static void test(List<Integer> idList) {
+		idList.add(1);
+		idList.add(2);
 	}
 	
 	private static int computeMethodOuterCount(String methodName,List<MethodInvoke> methodInvokeList){

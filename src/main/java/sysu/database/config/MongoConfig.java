@@ -24,7 +24,7 @@ public class MongoConfig extends AbstractMongoConfiguration{
 	@Override
 	public Mongo mongo() throws Exception {
 //		MongoCredential credential = MongoCredential.createMongoCRCredential("zhiyong", "sourcebase", "liu888888".toCharArray());
-		return new MongoClient(new ServerAddress("192.168.1.61",27017));
+		return new MongoClient(new ServerAddress("192.168.1.55",27017));
 //		return new MongoClient("localhost");
 	}
 	

@@ -282,7 +282,7 @@ public class CommentAnalysisController {
 		JSONObject jsonCommentType2ChartData = JSONObject.fromObject(commentType2ChartData);
 		model.addAttribute("commentType2ChartData", jsonCommentType2ChartData);
 
-		return "/commentstatistics/commentstatistic";
+		return "commentstatistics/commentstatistic";
 	}
 
 	@RequestMapping(value = "/commentconsistency/commentconsistency", method = RequestMethod.GET)

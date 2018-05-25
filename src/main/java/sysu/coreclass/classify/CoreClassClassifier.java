@@ -1,13 +1,16 @@
 package sysu.coreclass.classify;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -31,13 +34,26 @@ public class CoreClassClassifier implements Serializable{
 		
 		Resource resource = new ClassPathResource("file/train.arff");
 		
-		File trainFile = null;
+		List<String> fileLines = new ArrayList<String>();
+		BufferedReader br = null;
 		try {
-			trainFile = resource.getFile();
-		} catch (IOException e1) {
+			br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+			String str = null;
+			while((str = br.readLine())!=null) {
+				fileLines.add(str);
+			}
+		} catch (IOException e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
+
+		File trainFile = new File("d:/data/changeanalysis/temp/coreclass_train_file.arff");
+		try {
+			FileUtils.writeLines(trainFile, fileLines);
+		} catch (IOException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		};
 		ArffLoader atf = new ArffLoader();
 		
 		

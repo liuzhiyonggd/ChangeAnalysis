@@ -85,7 +85,7 @@ public class HomeController {
 		User user = new User();
 		model.addAttribute("user", user);
 		model.addAttribute("exist_username", false);
-		return "/register";
+		return "register";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -123,18 +123,18 @@ public class HomeController {
 		}
 
 		// 保存上传文件
-		FileUtils.writeByteArrayToFile(new File("D:/changeanalysis/temp/" + fileName), file.getBytes());
+		FileUtils.writeByteArrayToFile(new File("d:/data/changeanalysis/temp/" + fileName), file.getBytes());
 
 		// 解压文件
-		AnalysisFileUtils.unZip("D:/changeanalysis/temp/" + fileName,
-				"D:/changeanalysis/files/" + username + "/" + versionID);
+		AnalysisFileUtils.unZip("d:/data/changeanalysis/temp/" + fileName,
+				"d:/data/changeanalysis/files/" + username + "/" + versionID);
 
 		// 插入类到数据表class
-		ClassInserter.insert("D:/changeanalysis/files/" + username + "/" + versionID + "/old",
-				"D:/changeanalysis/files/" + username + "/" + versionID + "/new", username, versionID);
+		ClassInserter.insert("d:/data/changeanalysis/files/" + username + "/" + versionID + "/old",
+				"d:/data/changeanalysis/files/" + username + "/" + versionID + "/new", username, versionID);
 
 		// 插入类信息到数据表classMessage
-		ClassMessageInserter.insertVersion("D:/changeanalysis/files/" + username + "/" + versionID, versionID,
+		ClassMessageInserter.insertVersion("d:/data/changeanalysis/files/" + username + "/" + versionID, versionID,
 				username);
 
 		// 插入注释信息到数据表comment
@@ -160,7 +160,7 @@ public class HomeController {
 		
 		List<Version> versionList = versionService.findByUsername(username);
 		model.addAttribute("versionList", versionList);
-		return "/uploadlist";
+		return "uploadlist";
 	}
 	
 	@RequestMapping("/view")

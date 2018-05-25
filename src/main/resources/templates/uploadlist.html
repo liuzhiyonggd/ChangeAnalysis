@@ -136,6 +136,7 @@
 												<th>修改类数量</th>
 												<th>上传时间</th>
 												<th>查看</th>
+												<th>删除</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -145,6 +146,7 @@
 												<td th:text="${version.classNum}">100</td>
 												<td th:text="${version.formatUploadTime}">2018年1月1日 1时1分1秒</td>
 												<td><a th:href="'/view?versionID='+${version.versionID}">查看</a></td>
+												<td><a href="">删除</a></td>
 											</tr>
 										</tbody>
 									</table>
